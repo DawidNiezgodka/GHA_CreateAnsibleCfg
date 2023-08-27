@@ -15,8 +15,8 @@ jobs:
         config_file_name: 'ansible.cfg'
         remote_user: 'ubuntu'
         inventory_file: 'ansible/hosts.cfg'
-        host-key-checking: 'False'
-        privilege-escalation: 'True'
+        host_key_checking: 'False'
+        privilege_escalation: 'True'
 
     - name: ls ansible
       run: ls ansible

@@ -9,10 +9,10 @@ try {
   const directoryPath = core.getInput('directory_path');
   const configFileName = core.getInput('config_file_name');
 
-  const remoteUser = core.getInput('remote-user');
-  const inventoryFile = core.getInput('inventory-file') || "/ansible/hosts.cfg";
-  const hostKeyChecking = core.getInput('host-key-checking') || 'False';
-  const privilegeEscalation = core.getInput('privilege-escalation') || 'True';
+  const remoteUser = core.getInput('remote_user');
+  const inventoryFile = core.getInput('inventory_file') || "/ansible/hosts.cfg";
+  const hostKeyChecking = core.getInput('host_key_checking') || 'False';
+  const privilegeEscalation = core.getInput('privilege_escalation') || 'True';
 
   // If ansible config file is provided, use it and ignore other inputs
   if (existingConfigFilePath) {

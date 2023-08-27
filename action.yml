@@ -25,11 +25,11 @@ inputs:
     required: false
     default: 'ansible/hosts.cfg'
 
-  host-key-checking:
+  host_key_checking:
     description: 'The host_key_checking option for Ansible'
     required: false
     default: 'False'
-  privilege-escalation:
+  privilege_escalation:
     description: 'Whether the privilege escalation should be true or false'
     required: false
     default: 'True'
