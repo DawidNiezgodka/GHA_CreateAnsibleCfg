@@ -18,8 +18,8 @@ jobs:
         host-key-checking: 'False'
         privilege-escalation: 'True'
 
-    - name: list files
-      run: ls
+    - name: tree ansible
+      run: tree ansible
 
     - name: display content of ANSIBLE_CONFIG env var
       run: echo $ANSIBLE_CONFIG

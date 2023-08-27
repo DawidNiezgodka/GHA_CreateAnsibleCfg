@@ -2864,9 +2864,10 @@ function createDirectoriesRecursively(path) {
   fs.stat(path, (err, stats) => {
     // If it doesn't exist, create it
     if (err && err.code === 'ENOENT') {
+      console.log("Creating directory: " + path);
       fs.mkdir(path, { recursive: true }, (err) => {
         if (err) {
-          console.error('An error occurred:', err);
+          console.error('An error occurred in createDirectoriesRecursively:', err);
         } else {
           console.log(`Successfully created directory: ${path}`);
         }
@@ -2889,13 +2890,12 @@ function createConfigAndSetEnvVar(directoryPath, configFileName, fileContent) {
   // Create a full path for the config file
   const fullPath = path.join(directoryPath, configFileName);
 
-    // Write file to the directory
-    fs.writeFile(fullPath, fileContent, 'utf8', (err) => {
-      if (err) {
-        return console.error('An error occurred while writing file:', err);
-      }
-      console.log(`Successfully saved file at ${fullPath}`);
-    });
+  fs.writeFile(fullPath, fileContent, 'utf8', (err) => {
+    if (err) {
+      return console.error('An error occurred while writing file:', err);
+    }
+    console.log(`Successfully saved file at ${fullPath}`);
+  });
 
   // Set ANSIBLE_CONFIG environment variable
   process.env['ANSIBLE_CONFIG'] = fullPath;
