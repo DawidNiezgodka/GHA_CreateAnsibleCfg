@@ -2836,7 +2836,7 @@ try {
   // If ansible config file is provided, use it and ignore other inputs
   if (existingConfigFilePath) {
     // Set ANSIBLE_CONFIG environment variable
-    process.env['ANSIBLE_CONFIG'] = existingConfigFilePath;
+    core.exportVariable("ANSIBLE_CONFIG", existingConfigFilePath);
     return;
   }
 
@@ -2854,51 +2854,25 @@ become = ${privilegeEscalation}
 `;
 
   // Write to Ansible configuration file
+
   createConfigAndSetEnvVar(directoryPath, configFileName, ansibleConfigContent);
 } catch (error) {
   core.setFailed(error.message);
 }
 
-function createDirectoriesRecursively(path) {
-  // Check if the directory exists
-  fs.stat(path, (err, stats) => {
-    // If it doesn't exist, create it
-    if (err && err.code === 'ENOENT') {
-      console.log("Creating directory: " + path);
-      fs.mkdir(path, { recursive: true }, (err) => {
-        if (err) {
-          console.error('An error occurred in createDirectoriesRecursively:', err);
-        } else {
-          console.log(`Successfully created directory: ${path}`);
-        }
-      });
-    } else if (err) {
-      // An error other than 'ENOENT' occurred
-      console.error('An error occurred:', err);
-    } else {
-      // Directory exists
-      if (stats.isDirectory()) {
-        console.log(`Directory ${path} already exists.`);
-      } else {
-        console.log(`${path} exists but is not a directory.`);
-      }
-    }
-  });
+async function createDirectoriesRecursively(path) {
+  await fs.promises.mkdir(path, { recursive: true });
 }
 
-function createConfigAndSetEnvVar(directoryPath, configFileName, fileContent) {
+ function createConfigAndSetEnvVar(directoryPath, configFileName, fileContent) {
   // Create a full path for the config file
   const fullPath = path.join(directoryPath, configFileName);
-
-  fs.writeFile(fullPath, fileContent, 'utf8', (err) => {
-    if (err) {
-      return console.error('An error occurred while writing file:', err);
-    }
-    console.log(`Successfully saved file at ${fullPath}`);
-  });
+  console.log("Full path is: " + fullPath);
+  console.log("The content is: " + fileContent);
+  fs.writeFileSync(fullPath, fileContent);
 
   // Set ANSIBLE_CONFIG environment variable
-  process.env['ANSIBLE_CONFIG'] = fullPath;
+  core.exportVariable("ANSIBLE_CONFIG", fullPath);
 }
 
 })();
