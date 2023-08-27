@@ -7,19 +7,21 @@ on:
       - 'releases/*'
 
 jobs:
-  # unit tests
-  units:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v3
-    - run: npm ci
-    - run: npm test
-
-  # test action works running from the graph
   test:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
     - uses: ./
       with:
-        milliseconds: 1000
+        directory_path: 'ansible'
+        config_file_name: 'ansible.cfg'
+        remote_user: 'ubuntu'
+        inventory_file: 'ansible/hosts.cfg'
+        host-key-checking: 'False'
+        privilege-escalation: 'True'
+
+    - name: list files
+      run: ls
+
+    - name: display content of ANSIBLE_CONFIG env var
+      run: echo $ANSIBLE_CONFIG

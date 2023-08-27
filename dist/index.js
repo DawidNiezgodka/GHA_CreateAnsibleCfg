@@ -2688,23 +2688,6 @@ exports["default"] = _default;
 
 /***/ }),
 
-/***/ 258:
-/***/ ((module) => {
-
-let wait = function (milliseconds) {
-  return new Promise((resolve) => {
-    if (typeof milliseconds !== 'number') {
-      throw new Error('milliseconds not a number');
-    }
-    setTimeout(() => resolve("done!"), milliseconds)
-  });
-};
-
-module.exports = wait;
-
-
-/***/ }),
-
 /***/ 491:
 /***/ ((module) => {
 
@@ -2835,26 +2818,88 @@ var __webpack_exports__ = {};
 // This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
 (() => {
 const core = __nccwpck_require__(186);
-const wait = __nccwpck_require__(258);
+const fs = __nccwpck_require__(147);
+const path = __nccwpck_require__(17);
 
 
-// most @actions toolkit packages have async methods
-async function run() {
-  try {
-    const ms = core.getInput('milliseconds');
-    core.info(`Waiting ${ms} milliseconds ...`);
+try {
+  // Get inputs from action
+  const existingConfigFilePath = core.getInput('existing_config_file_path');
+  const directoryPath = core.getInput('directory_path');
+  const configFileName = core.getInput('config_file_name');
 
-    core.debug((new Date()).toTimeString()); // debug is only output if you set the secret `ACTIONS_RUNNER_DEBUG` to true
-    await wait(parseInt(ms));
-    core.info((new Date()).toTimeString());
+  const remoteUser = core.getInput('remote-user');
+  const inventoryFile = core.getInput('inventory-file') || "/ansible/hosts.cfg";
+  const hostKeyChecking = core.getInput('host-key-checking') || 'False';
+  const privilegeEscalation = core.getInput('privilege-escalation') || 'True';
 
-    core.setOutput('time', new Date().toTimeString());
-  } catch (error) {
-    core.setFailed(error.message);
+  // If ansible config file is provided, use it and ignore other inputs
+  if (existingConfigFilePath) {
+    // Set ANSIBLE_CONFIG environment variable
+    process.env['ANSIBLE_CONFIG'] = existingConfigFilePath;
+    return;
   }
+
+  createDirectoriesRecursively(directoryPath);
+
+  // Prepare Ansible configuration content
+  let ansibleConfigContent = `
+[defaults]
+host_key_checking = ${hostKeyChecking}
+remote_user = ${remoteUser}
+ansible_ssh_common_args='-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null'
+inventory = ${inventoryFile}
+[privilege_escalation]
+become = ${privilegeEscalation}
+`;
+
+  // Write to Ansible configuration file
+  createConfigAndSetEnvVar(directoryPath, configFileName, ansibleConfigContent);
+} catch (error) {
+  core.setFailed(error.message);
 }
 
-run();
+function createDirectoriesRecursively(path) {
+  // Check if the directory exists
+  fs.stat(path, (err, stats) => {
+    // If it doesn't exist, create it
+    if (err && err.code === 'ENOENT') {
+      fs.mkdir(path, { recursive: true }, (err) => {
+        if (err) {
+          console.error('An error occurred:', err);
+        } else {
+          console.log(`Successfully created directory: ${path}`);
+        }
+      });
+    } else if (err) {
+      // An error other than 'ENOENT' occurred
+      console.error('An error occurred:', err);
+    } else {
+      // Directory exists
+      if (stats.isDirectory()) {
+        console.log(`Directory ${path} already exists.`);
+      } else {
+        console.log(`${path} exists but is not a directory.`);
+      }
+    }
+  });
+}
+
+function createConfigAndSetEnvVar(directoryPath, configFileName, fileContent) {
+  // Create a full path for the config file
+  const fullPath = path.join(directoryPath, configFileName);
+
+    // Write file to the directory
+    fs.writeFile(fullPath, fileContent, 'utf8', (err) => {
+      if (err) {
+        return console.error('An error occurred while writing file:', err);
+      }
+      console.log(`Successfully saved file at ${fullPath}`);
+    });
+
+  // Set ANSIBLE_CONFIG environment variable
+  process.env['ANSIBLE_CONFIG'] = fullPath;
+}
 
 })();
 

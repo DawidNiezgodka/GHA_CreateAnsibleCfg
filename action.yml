@@ -1,13 +1,38 @@
-name: 'Wait'
-description: 'Wait a designated number of milliseconds'
+name: 'Create Ansible configuration'
+description: 'Create a custom Ansible configuration'
 inputs:
-  milliseconds:  # id of input
-    description: 'number of milliseconds to wait'
+
+  existing_config_file_path:
+    description: 'If there is a custom Ansible config file, provide the path to it'
+    required: false
+  directory_path:
+    description: |
+      Path to the directory where Ansible config sits. 
+      The directory will be created if it does not exist
+    required: false
+    default: 'ansible'
+  config_file_name:
+    description: |
+      The name of the target Ansible config file.
+      The file will be created in the directory pointed to by directory_path
+    required: false
+    default: 'ansible.cfg'
+  remote_user:
+    description: 'The remote user for Ansible'
     required: true
-    default: '1000'
-outputs:
-  time: # output will be available to future steps
-    description: 'The current time after waiting'
+  inventory_file:
+    description: 'The path to the inventory file for Ansible'
+    required: false
+    default: 'ansible/hosts.cfg'
+
+  host-key-checking:
+    description: 'The host_key_checking option for Ansible'
+    required: false
+    default: 'False'
+  privilege-escalation:
+    description: 'Whether the privilege escalation should be true or false'
+    required: false
+    default: 'True'
 runs:
   using: 'node16'
-  main: 'dist/index.js'
+  main: 'action.js'
