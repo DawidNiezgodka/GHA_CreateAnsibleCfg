@@ -2821,7 +2821,6 @@ const core = __nccwpck_require__(186);
 const fs = __nccwpck_require__(147);
 const path = __nccwpck_require__(17);
 
-
 try {
   // Get inputs from action
   const existingConfigFilePath = core.getInput('existing_config_file_path');
@@ -2829,6 +2828,7 @@ try {
   const configFileName = core.getInput('config_file_name');
 
   const remoteUser = core.getInput('remote_user');
+  const privateKeyPath = core.getInput('private_key_path');
   const inventoryFile = core.getInput('inventory_file') || "/ansible/hosts.cfg";
   const hostKeyChecking = core.getInput('host_key_checking') || 'False';
   const privilegeEscalation = core.getInput('privilege_escalation') || 'True';
@@ -2849,6 +2849,7 @@ host_key_checking = ${hostKeyChecking}
 remote_user = ${remoteUser}
 ansible_ssh_common_args='-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null'
 inventory = ${inventoryFile}
+private_key_file = ${privateKeyPath}
 [privilege_escalation]
 become = ${privilegeEscalation}
 `;

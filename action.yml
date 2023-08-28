@@ -24,6 +24,9 @@ inputs:
     description: 'The path to the inventory file for Ansible'
     required: false
     default: 'ansible/hosts.cfg'
+  private_key_file:
+    description: 'The private key for Ansible'
+    required: false
 
   host_key_checking:
     description: 'The host_key_checking option for Ansible'
