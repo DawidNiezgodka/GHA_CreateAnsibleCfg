@@ -24,16 +24,25 @@ try {
   createDirectoriesRecursively(directoryPath);
 
   // Prepare Ansible configuration content
-  let ansibleConfigContent = `
-[defaults]
-host_key_checking = ${hostKeyChecking}
-remote_user = ${remoteUser}
-ansible_ssh_common_args='-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null'
-inventory = ${inventoryFile}
-private_key_file = ${privateKeyPath}
-[privilege_escalation]
-become = ${privilegeEscalation}
-`;
+    let ansibleConfigContent = `[defaults]\n`;
+    if (hostKeyChecking) {
+        ansibleConfigContent += `host_key_checking = ${hostKeyChecking}\n`;
+    }
+    if (remoteUser) {
+        ansibleConfigContent += `remote_user = ${remoteUser}\n`;
+    }
+    ansibleConfigContent += `ansible_ssh_common_args='-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null'\n`;
+    if (inventoryFile) {
+        ansibleConfigContent += `inventory = ${inventoryFile}\n`;
+    }
+    if (privateKeyPath) {
+        ansibleConfigContent += `private_key_file = ${privateKeyPath}\n`;
+    }
+
+    ansibleConfigContent += `[privilege_escalation]\n`;
+    if (privilegeEscalation) {
+        ansibleConfigContent += `become = ${privilegeEscalation}\n`;
+    }
 
   // Write to Ansible configuration file
 
