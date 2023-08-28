@@ -24,7 +24,7 @@ try {
   createDirectoriesRecursively(directoryPath);
 
   // Prepare Ansible configuration content
-    let ansibleConfigContent = `[defaults]\n`;
+    let ansibleConfigContent = `\n[defaults]\n`;
     if (hostKeyChecking) {
         ansibleConfigContent += `host_key_checking = ${hostKeyChecking}\n`;
     }
