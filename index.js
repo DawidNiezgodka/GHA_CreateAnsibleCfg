@@ -9,8 +9,8 @@ try {
   const configFileName = core.getInput('config_file_name');
 
   const remoteUser = core.getInput('remote_user');
-  const privateKeyPath = core.getInput('private_key_path');
-  const inventoryFile = core.getInput('inventory_file') || "/ansible/hosts.cfg";
+  const privateKeyPath = core.getInput('private_key_file');
+  const inventoryFile = core.getInput('inventory_file') || "hosts.cfg";
   const hostKeyChecking = core.getInput('host_key_checking') || 'False';
   const privilegeEscalation = core.getInput('privilege_escalation') || 'True';
 
