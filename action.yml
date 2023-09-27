@@ -27,6 +27,10 @@ inputs:
   private_key_file:
     description: 'The private key for Ansible'
     required: false
+  roles_path:
+    description: 'The path to the folder containing Ansible roles'
+    required: false
+    default: 'ansible/roles'
 
   host_key_checking:
     description: 'The host_key_checking option for Ansible'
