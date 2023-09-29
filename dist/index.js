@@ -2833,6 +2833,11 @@ try {
   const rolesPath = core.getInput('roles_path');
   const hostKeyChecking = core.getInput('host_key_checking') || 'False';
   const privilegeEscalation = core.getInput('privilege_escalation') || 'True';
+  const enableCallbacks = core.getInput('enable_callbacks') || 'True';
+  const gatheringPolicy = core.getInput('gathering') || 'smart';
+  const controlMaster = core.getInput('control_master') || 'False';
+  const controlPersist = core.getInput('control_persist') || 'True';
+  const pipelining = core.getInput('pipelining') || 'True';
 
   // If ansible config file is provided, use it and ignore other inputs
   if (existingConfigFilePath) {
@@ -2851,7 +2856,7 @@ try {
     if (remoteUser) {
         ansibleConfigContent += `remote_user = ${remoteUser}\n`;
     }
-    ansibleConfigContent += `ansible_ssh_common_args='-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null'\n`;
+
     if (inventoryFile) {
         ansibleConfigContent += `inventory = ${inventoryFile}\n`;
     }
@@ -2861,11 +2866,38 @@ try {
     if (rolesPath) {
         ansibleConfigContent += `roles_path = ${rolesPath}\n`;
     }
+    if (enableCallbacks) {
+        ansibleConfigContent += `callbacks_enabled = timer, profile_tasks, profile_roles\n`;
+    }
+    if (gatheringPolicy) {
+        ansibleConfigContent += `gathering = ${gatheringPolicy}\n`;
+    }
+
 
     ansibleConfigContent += `[privilege_escalation]\n`;
     if (privilegeEscalation) {
         ansibleConfigContent += `become = ${privilegeEscalation}\n`;
     }
+
+    // SSH
+    ansibleConfigContent += `[ssh_connection]\n`;
+    ansibleConfigContent += `ssh_args='-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null`;
+
+    if (controlMaster) {
+        ansibleConfigContent += ` -o ControlMaster=auto`;
+    }
+
+    if (controlPersist) {
+        ansibleConfigContent += ` -o ControlPersist=600s`;
+    }
+    ansibleConfigContent += `\n`;
+
+    if (pipelining) {
+        ansibleConfigContent += `pipelining = ${pipelining}\n`
+    }
+
+    ansibleConfigContent += `\n`;
+
 
   // Write to Ansible configuration file
 

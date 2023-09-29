@@ -40,6 +40,31 @@ inputs:
     description: 'Whether the privilege escalation should be true or false'
     required: false
     default: 'True'
+  enable_callsbacks:
+    description: 'Whether the callbacks should be enabled or not'
+    required: false
+    default: 'True'
+  gathering:
+    description: 'Whether the gathering should be smart or explicit'
+    required: false
+    default: 'smart'
+  control_master:
+    description: 'Whether the control master should be true or false'
+    required: false
+    default: 'True'
+  control_persist:
+    description: 'Whether the control persist should be true or false'
+    required: false
+    default: 'True'
+  control_persist_time:
+    description: 'The control persist time for Ansible'
+    required: false
+    default: '600s'
+  pipelining:
+    description: 'Whether the pipelining should be true or false'
+    required: false
+    default: 'True'
+
 runs:
   using: 'node16'
   main: 'dist/index.js'
