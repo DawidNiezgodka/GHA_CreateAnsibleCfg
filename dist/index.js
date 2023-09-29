@@ -2881,7 +2881,7 @@ try {
 
     // SSH
     ansibleConfigContent += `[ssh_connection]\n`;
-    ansibleConfigContent += `ssh_args='-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null`;
+    ansibleConfigContent += `ssh_args= -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null`;
 
     if (controlMaster) {
         ansibleConfigContent += ` -o ControlMaster=auto`;
